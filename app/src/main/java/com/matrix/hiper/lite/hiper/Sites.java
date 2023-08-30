@@ -183,15 +183,12 @@ public class Sites {
             Yaml yaml = new Yaml();
             Map object = yaml.load(conf);
             HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("point");
-            HashMap<String, ArrayList<String>> tower = (HashMap<String, ArrayList<String>>) object.get("tower");
-            ArrayList<String> hosts = tower.get("hosts");
+            HashMap<String, ArrayList<String>> tower = (HashMap<String, ArrayList<String>>) object.get("points");
+            ArrayList<String> hosts = tower.get("points");
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
             HashMap<String, ArrayList<String>> relay = (HashMap<String, ArrayList<String>>) object.get("relay");
-            ArrayList<String> relays = relay.get("relays");
             HashMap<String, StaticHosts> point = new HashMap<>();
             for (String pointKey : rawPoint.keySet()) {
-                boolean isTower = hosts.contains(pointKey);
-                StaticHosts staticHosts = new StaticHosts(isTower, rawPoint.get(pointKey));
                 point.put(pointKey, staticHosts);
             }
             this.points = point;
@@ -209,8 +206,6 @@ public class Sites {
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
             HashMap<String, StaticHosts> point = new HashMap<>();
             for (String pointKey : rawPoint.keySet()) {
-                boolean isTower = hosts.contains(pointKey);
-                StaticHosts staticHosts = new StaticHosts(isTower, rawPoint.get(pointKey));
                 point.put(pointKey, staticHosts);
             }
             return new IncomingSite(
@@ -236,11 +231,10 @@ public class Sites {
 
         private final String name;
         private final String id;
-        private final HashMap<String, StaticHosts> point;
+        private final HashMap<String, StaticHosts> points;
         private final ArrayList<UnsafeRoute> unsafeRoutes;
         @SerializedName("dns")
         private final ArrayList<String> dnsResolvers;
-        private final Relay relay;
         private final CertificateInfo cert;
         private final ArrayList<CertificateInfo> ca;
         private final int lhDuration;
@@ -262,13 +256,12 @@ public class Sites {
             this("", "", new HashMap<>(), new ArrayList<>(), new ArrayList<>(), new Relay(), new CertificateInfo(), new ArrayList<>(), 0, 0, 0, "", 0, "", false, "", "", new ArrayList<>(), "");
         }
 
-        public Site(String name, String id, HashMap<String, StaticHosts> point, ArrayList<UnsafeRoute> unsafeRoutes, ArrayList<String> dnsResolvers, Relay relay, CertificateInfo cert, ArrayList<CertificateInfo> ca, int lhDuration, int port, int mtu, String cipher, int sortKey, String logVerbosity, boolean connected, String status, String logFile, ArrayList<String> errors, String config) {
+        public Site(String name, String id, HashMap<String, StaticHosts> point, ArrayList<UnsafeRoute> unsafeRoutes, ArrayList<String> dnsResolvers, CertificateInfo cert, ArrayList<CertificateInfo> ca, int lhDuration, int port, int mtu, String cipher, int sortKey, String logVerbosity, boolean connected, String status, String logFile, ArrayList<String> errors, String config) {
             this.name = name;
             this.id = id;
-            this.point = point;
+            this.points = point;
             this.unsafeRoutes = unsafeRoutes;
             this.dnsResolvers = dnsResolvers;
-            this.relay = relay;
             this.cert = cert;
             this.ca = ca;
             this.lhDuration = lhDuration;
@@ -293,7 +286,7 @@ public class Sites {
         }
 
         public HashMap<String, StaticHosts> getPoint() {
-            return point;
+            return points;
         }
 
         public ArrayList<UnsafeRoute> getUnsafeRoutes() {
