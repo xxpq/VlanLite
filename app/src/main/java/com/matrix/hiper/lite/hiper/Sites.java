@@ -186,9 +186,10 @@ public class Sites {
             HashMap<String, ArrayList<String>> tower = (HashMap<String, ArrayList<String>>) object.get("points");
             ArrayList<String> hosts = tower.get("points");
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
-            HashMap<String, ArrayList<String>> relay = (HashMap<String, ArrayList<String>>) object.get("relay");
             HashMap<String, StaticHosts> point = new HashMap<>();
             for (String pointKey : rawPoint.keySet()) {
+                boolean isTower = hosts.contains(pointKey);
+                StaticHosts staticHosts = new StaticHosts(isTower, rawPoint.get(pointKey));
                 point.put(pointKey, staticHosts);
             }
             this.points = point;
@@ -206,6 +207,8 @@ public class Sites {
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
             HashMap<String, StaticHosts> point = new HashMap<>();
             for (String pointKey : rawPoint.keySet()) {
+                boolean isTower = hosts.contains(pointKey);
+                StaticHosts staticHosts = new StaticHosts(isTower, rawPoint.get(pointKey));
                 point.put(pointKey, staticHosts);
             }
             return new IncomingSite(
@@ -253,7 +256,7 @@ public class Sites {
         private final String config;
 
         public Site() {
-            this("", "", new HashMap<>(), new ArrayList<>(), new ArrayList<>(), new Relay(), new CertificateInfo(), new ArrayList<>(), 0, 0, 0, "", 0, "", false, "", "", new ArrayList<>(), "");
+            this("", "", new HashMap<>(), new ArrayList<>(), new ArrayList<>(), new CertificateInfo(), new ArrayList<>(), 0, 0, 0, "", 0, "", false, "", "", new ArrayList<>(), "");
         }
 
         public Site(String name, String id, HashMap<String, StaticHosts> point, ArrayList<UnsafeRoute> unsafeRoutes, ArrayList<String> dnsResolvers, CertificateInfo cert, ArrayList<CertificateInfo> ca, int lhDuration, int port, int mtu, String cipher, int sortKey, String logVerbosity, boolean connected, String status, String logFile, ArrayList<String> errors, String config) {
