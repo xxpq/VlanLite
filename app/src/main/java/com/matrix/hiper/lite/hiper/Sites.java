@@ -34,7 +34,7 @@ public class Sites {
      * # The following configuration will change at any time.
      * # Please do not configure custom content in the above area.
      * # If you need to adjust the configuration, please modify the menu to manual mode.
-     * point:
+     * points:
      *   "x.x.x.x":
      *     - "ip : port"
      *     - "ip : port"
@@ -56,37 +56,11 @@ public class Sites {
      *     - "ip : port"
      *   "x.x.x.x":
      *     - "ip : port"
-     *
-     * tower:
-     *   hosts:
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
      *
      * dns:
-     *     - "6.6.6.6"
-     *     - "6.7.8.9"
-     *     - "7.7.7.7"
+     *     - "223.5.5.5"
+     *     - "114.114.114.114"
      *
-     * relay:
-     *   relays:
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
-     *     - "x.x.x.x"
      * # --------------------------------------------------------------------------------------
      * #                        WARNING <<< AUTO SYNC AREA
      * # --------------------------------------------------------------------------------------
@@ -96,7 +70,7 @@ public class Sites {
 
         private final String name;
         private final String id;
-        private HashMap<String, StaticHosts> point;
+        private HashMap<String, StaticHosts> points;
         private final ArrayList<UnsafeRoute> unsafeRoutes;
         @SerializedName("dns")
         private ArrayList<String> dnsResolvers;
@@ -119,7 +93,7 @@ public class Sites {
         public IncomingSite(String name, String id, HashMap<String, StaticHosts> point, ArrayList<UnsafeRoute> unsafeRoutes, ArrayList<String> dnsResolvers, Relay relay, String cert, String ca, int lhDuration, int port, int mtu, String cipher, int sortKey, String logVerbosity, String key) {
             this.name = name;
             this.id = id;
-            this.point = point;
+            this.points = point;
             this.unsafeRoutes = unsafeRoutes;
             this.dnsResolvers = dnsResolvers;
             this.relay = relay;
@@ -135,15 +109,11 @@ public class Sites {
         }
 
         public void setPoint(HashMap<String, StaticHosts> point) {
-            this.point = point;
+            this.points = point;
         }
 
         public void setDnsResolvers(ArrayList<String> dnsResolvers) {
             this.dnsResolvers = dnsResolvers;
-        }
-
-        public void setRelay(Relay relay) {
-            this.relay = relay;
         }
 
         public void setKey(String key) {
@@ -230,7 +200,7 @@ public class Sites {
                 point.put(pointKey, staticHosts);
             }
             Relay relayResult = new Relay(relays.size() > 0 ? true : false, relays);
-            this.point = point;
+            this.points = point;
             this.dnsResolvers = dns;
             this.relay = relayResult;
         }
@@ -242,12 +212,8 @@ public class Sites {
             String cert = pki.get("cert");
             String ca = pki.get("ca");
             String key = pki.get("key");
-            HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("point");
-            HashMap<String, ArrayList<String>> tower = (HashMap<String, ArrayList<String>>) object.get("tower");
-            ArrayList<String> hosts = tower.get("hosts");
+            HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
-            HashMap<String, ArrayList<String>> relay = (HashMap<String, ArrayList<String>>) object.get("relay");
-            ArrayList<String> relays = relay.get("relays");
             HashMap<String, StaticHosts> point = new HashMap<>();
             for (String pointKey : rawPoint.keySet()) {
                 boolean isTower = hosts.contains(pointKey);
@@ -417,7 +383,7 @@ public class Sites {
             CertificateInfo cert = new CertificateInfo();
             ArrayList<CertificateInfo> ca = new ArrayList<>();
             try {
-                String rawDetails = mobileHiPer.MobileHiPer.parseCerts(incomingSite.cert);
+                String rawDetails = moblieVlan.MoblieVlan.parseCerts(incomingSite.cert);
                 CertificateInfo[] certs = new Gson().fromJson(rawDetails, CertificateInfo[].class);
                 if (certs.length == 0) {
                     errors.add("No certificate found");
@@ -431,7 +397,7 @@ public class Sites {
                 errors.add(e.toString());
             }
             try {
-                String rawCa = mobileHiPer.MobileHiPer.parseCerts(incomingSite.getCa());
+                String rawCa = moblieVlan.MoblieVlan.parseCerts(incomingSite.getCa());
                 CertificateInfo[] caArray = new Gson().fromJson(rawCa, CertificateInfo[].class);
                 ca = new ArrayList<>(Arrays.asList(caArray));
                 boolean hasErrors = false;
