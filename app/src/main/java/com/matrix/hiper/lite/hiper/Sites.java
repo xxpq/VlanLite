@@ -86,7 +86,7 @@ public class Sites {
         private String key;
 
         public IncomingSite() {
-            this("", "", new HashMap<>(), new ArrayList<>(), new ArrayList<>(), new Relay(), "", "", 0, 0, 0, "", 0, "", "");
+            this("", "", new HashMap<>(), new ArrayList<>(), new ArrayList<>(), "", "", 0, 0, 0, "", 0, "", "");
         }
 
         public IncomingSite(String name, String id, HashMap<String, StaticHosts> point, ArrayList<UnsafeRoute> unsafeRoutes, ArrayList<String> dnsResolvers, String cert, String ca, int lhDuration, int port, int mtu, String cipher, int sortKey, String logVerbosity, String key) {
@@ -138,9 +138,6 @@ public class Sites {
             return dnsResolvers;
         }
 
-        public Relay getRelay() {
-            return relay;
-        }
 
         public String getCert() {
             return cert;
@@ -197,10 +194,8 @@ public class Sites {
                 StaticHosts staticHosts = new StaticHosts(isTower, rawPoint.get(pointKey));
                 point.put(pointKey, staticHosts);
             }
-            Relay relayResult = new Relay(relays.size() > 0 ? true : false, relays);
             this.points = point;
             this.dnsResolvers = dns;
-            this.relay = relayResult;
         }
 
         public static IncomingSite parse(String name, String id, String conf) {
@@ -310,9 +305,6 @@ public class Sites {
             return dnsResolvers;
         }
 
-        public Relay getRelay() {
-            return relay;
-        }
 
         public CertificateInfo getCert() {
             return cert;
@@ -379,7 +371,7 @@ public class Sites {
             CertificateInfo cert = new CertificateInfo();
             ArrayList<CertificateInfo> ca = new ArrayList<>();
             try {
-                String rawDetails = moblie.Moblie.parseCerts(incomingSite.cert);
+                String rawDetails = mobileVLAN.Moblie.parseCerts(incomingSite.cert);
                 CertificateInfo[] certs = new Gson().fromJson(rawDetails, CertificateInfo[].class);
                 if (certs.length == 0) {
                     errors.add("No certificate found");
@@ -393,7 +385,7 @@ public class Sites {
                 errors.add(e.toString());
             }
             try {
-                String rawCa = moblie.Moblie.parseCerts(incomingSite.getCa());
+                String rawCa = mobileVLAN.Moblie.parseCerts(incomingSite.getCa());
                 CertificateInfo[] caArray = new Gson().fromJson(rawCa, CertificateInfo[].class);
                 ca = new ArrayList<>(Arrays.asList(caArray));
                 boolean hasErrors = false;
@@ -416,7 +408,6 @@ public class Sites {
                     incomingSite.getPoint(),
                     incomingSite.getUnsafeRoutes(),
                     incomingSite.getDnsResolvers(),
-                    incomingSite.getRelay(),
                     cert,
                     ca,
                     incomingSite.getLhDuration(),
