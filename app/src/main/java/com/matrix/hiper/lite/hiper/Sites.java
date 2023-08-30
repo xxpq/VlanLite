@@ -371,7 +371,7 @@ public class Sites {
             CertificateInfo cert = new CertificateInfo();
             ArrayList<CertificateInfo> ca = new ArrayList<>();
             try {
-                String rawDetails = mobileVLAN.Moblie.parseCerts(incomingSite.cert);
+                String rawDetails = libx.Moblie.parseCerts(incomingSite.cert);
                 CertificateInfo[] certs = new Gson().fromJson(rawDetails, CertificateInfo[].class);
                 if (certs.length == 0) {
                     errors.add("No certificate found");
@@ -385,7 +385,7 @@ public class Sites {
                 errors.add(e.toString());
             }
             try {
-                String rawCa = mobileVLAN.Moblie.parseCerts(incomingSite.getCa());
+                String rawCa = libx.Moblie.parseCerts(incomingSite.getCa());
                 CertificateInfo[] caArray = new Gson().fromJson(rawCa, CertificateInfo[].class);
                 ca = new ArrayList<>(Arrays.asList(caArray));
                 boolean hasErrors = false;
