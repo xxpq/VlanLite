@@ -74,7 +74,6 @@ public class Sites {
         private final ArrayList<UnsafeRoute> unsafeRoutes;
         @SerializedName("dns")
         private ArrayList<String> dnsResolvers;
-        private Relay relay;
         private final String cert;
         private final String ca;
         private final int lhDuration;
@@ -90,13 +89,12 @@ public class Sites {
             this("", "", new HashMap<>(), new ArrayList<>(), new ArrayList<>(), new Relay(), "", "", 0, 0, 0, "", 0, "", "");
         }
 
-        public IncomingSite(String name, String id, HashMap<String, StaticHosts> point, ArrayList<UnsafeRoute> unsafeRoutes, ArrayList<String> dnsResolvers, Relay relay, String cert, String ca, int lhDuration, int port, int mtu, String cipher, int sortKey, String logVerbosity, String key) {
+        public IncomingSite(String name, String id, HashMap<String, StaticHosts> point, ArrayList<UnsafeRoute> unsafeRoutes, ArrayList<String> dnsResolvers, String cert, String ca, int lhDuration, int port, int mtu, String cipher, int sortKey, String logVerbosity, String key) {
             this.name = name;
             this.id = id;
             this.points = point;
             this.unsafeRoutes = unsafeRoutes;
             this.dnsResolvers = dnsResolvers;
-            this.relay = relay;
             this.cert = cert;
             this.ca = ca;
             this.lhDuration = lhDuration;
@@ -129,7 +127,7 @@ public class Sites {
         }
 
         public HashMap<String, StaticHosts> getPoint() {
-            return point;
+            return points;
         }
 
         public ArrayList<UnsafeRoute> getUnsafeRoutes() {
@@ -220,14 +218,12 @@ public class Sites {
                 StaticHosts staticHosts = new StaticHosts(isTower, rawPoint.get(pointKey));
                 point.put(pointKey, staticHosts);
             }
-            Relay relayResult = new Relay(relays.size() > 0 ? true : false, relays);
             return new IncomingSite(
                     name,
                     id,
                     point,
                     new ArrayList<>(),
                     dns,
-                    relayResult,
                     cert,
                     ca,
                     0,
