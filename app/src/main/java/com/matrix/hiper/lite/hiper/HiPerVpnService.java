@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Objects;
 
-import libx.CIDR;
+import mobile.CIDR;
 
 public class HiPerVpnService extends VpnService {
 
@@ -32,7 +32,7 @@ public class HiPerVpnService extends VpnService {
 
     private static boolean running = false;
     private static Sites.Site site = null;
-    private static libx.Bulk hiper = null;
+    private static mobile.Bulk hiper = null;
     private static ParcelFileDescriptor vpnInterface = null;
     private NetworkCallback networkCallback = new NetworkCallback();
     private boolean didSleep = false;
@@ -91,7 +91,7 @@ public class HiPerVpnService extends VpnService {
         CIDR ipNet;
 
         try {
-            ipNet = libx.Moblie.parseCIDR(site.getCert().getCert().getDetails().getIps().get(0));
+            ipNet = mobile.Moblie.parseCIDR(site.getCert().getCert().getDetails().getIps().get(0));
         } catch (Exception e) {
             announceExit(e.toString());
             return;
@@ -112,7 +112,7 @@ public class HiPerVpnService extends VpnService {
         // Add our unsafe routes
         for (Sites.UnsafeRoute unsafeRoute : site.getUnsafeRoutes()) {
             try {
-                CIDR cidr = libx.Moblie.parseCIDR(unsafeRoute.getRoute());
+                CIDR cidr = mobile.Moblie.parseCIDR(unsafeRoute.getRoute());
                 builder.addRoute(cidr.getNetwork(), (int) cidr.getMaskSize());
             } catch (Exception e) {
                 announceExit(e.toString());
@@ -140,7 +140,7 @@ public class HiPerVpnService extends VpnService {
         Handler handler = new Handler();
         new Thread(() -> {
             try {
-                hiper = libx.Moblie.newBulk(site.getConfig(), site.getKey(this), site.getLogFile(), vpnInterface.getFd());
+                hiper = mobile.Moblie.newBulk(site.getConfig(), site.getKey(this), site.getLogFile(), vpnInterface.getFd());
                 handler.post(() -> {
                     registerNetworkCallback();
                     //TODO: There is an open discussion around sleep killing tunnels or just changing mobile to tear down stale tunnels
