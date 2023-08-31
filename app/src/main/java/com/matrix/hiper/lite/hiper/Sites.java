@@ -209,8 +209,7 @@ public class Sites {
             HashMap<String, ArrayList<String>> tower = (HashMap<String, ArrayList<String>>) object.get("points");
             ArrayList<String> hosts = tower.get("points");
             for (String pointKey : rawPoint.keySet()) {
-                boolean isTower = hosts.contains(pointKey);
-                StaticHosts staticHosts = new StaticHosts(isTower, rawPoint.get(pointKey));
+                StaticHosts staticHosts = new StaticHosts(true, rawPoint.get(pointKey));
                 point.put(pointKey, staticHosts);
             }
             return new IncomingSite(
