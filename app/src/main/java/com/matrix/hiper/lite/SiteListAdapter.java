@@ -103,7 +103,7 @@ public class SiteListAdapter extends BaseAdapter {
         }
         DateFormat dateFormat = new SimpleDateFormat(context.getString(R.string.time_pattern), Locale.getDefault());
         viewHolder.date.setText(date == null ? site.getCert().getCert().getDetails().getNotAfter() : dateFormat.format(date));
-        viewHolder.ip.setText(site.getCert().getCert().getDetails().getIps().get(0).split("/")[0]);
+        viewHolder.ip.setText(site.getCert().getCert().getDetails().getIps().get(0));
         if (HiPerVpnService.isRunning(site.getName())) {
             viewHolder.name.setTextColor(Color.GREEN);
             viewHolder.date.setTextColor(Color.GREEN);
