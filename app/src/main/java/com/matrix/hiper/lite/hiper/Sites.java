@@ -182,17 +182,9 @@ public class Sites {
         public void update(String conf) {
             Yaml yaml = new Yaml();
             Map object = yaml.load(conf);
-            HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("point");
-            HashMap<String, ArrayList<String>> tower = (HashMap<String, ArrayList<String>>) object.get("points");
-            ArrayList<String> hosts = tower.get("points");
+            HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
-            HashMap<String, StaticHosts> point = new HashMap<>();
-            for (String pointKey : rawPoint.keySet()) {
-                boolean isTower = hosts.contains(pointKey);
-                StaticHosts staticHosts = new StaticHosts(isTower, rawPoint.get(pointKey));
-                point.put(pointKey, staticHosts);
-            }
-            this.points = point;
+            this.points = rawPoint;
             this.dnsResolvers = dns;
         }
 
