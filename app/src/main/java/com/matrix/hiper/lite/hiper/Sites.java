@@ -182,9 +182,9 @@ public class Sites {
         public void update(String conf) {
             Yaml yaml = new Yaml();
             Map object = yaml.load(conf);
-            HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
+            // HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
-            this.points = rawPoint;
+            // this.points = rawPoint;
             this.dnsResolvers = dns;
         }
 
