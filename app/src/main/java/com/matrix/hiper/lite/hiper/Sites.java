@@ -192,9 +192,13 @@ public class Sites {
             Yaml yaml = new Yaml();
             Map object = yaml.load(conf);
             HashMap<String, String> pki = (HashMap<String, String>) object.get("pki");
+            announceExit(pki.toString());
             String cert = pki.get("cert");
+            announceExit(cert.toString());
             String ca = pki.get("ca");
+            announceExit(ca.toString());
             String key = pki.get("key");
+            announceExit(key.toString());
             HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
             HashMap<String, StaticHosts> point = new HashMap<>();

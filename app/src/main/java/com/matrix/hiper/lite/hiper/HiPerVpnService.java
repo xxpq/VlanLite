@@ -91,6 +91,7 @@ public class HiPerVpnService extends VpnService {
         CIDR ipNet;
 
         try {
+            announceExit(site.getCert().toString());
             ipNet = mobile.Mobile.parseCIDR(site.getCert().getCert().getDetails().getIps().get(0));
         } catch (Exception e) {
             announceExit(e.toString());
