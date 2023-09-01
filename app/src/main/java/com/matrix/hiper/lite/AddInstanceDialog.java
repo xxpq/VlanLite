@@ -84,13 +84,13 @@ public class AddInstanceDialog extends Dialog implements View.OnClickListener {
                     });
                 }
                 else {
-                    String syncAdditionUrl = mobile.Mobile.getConfigSetting(conf, "sync.addition");
-                    if (syncAdditionUrl != null && !syncAdditionUrl.equals("")) {
-                        String syncAddition = NetworkUtils.doGet(NetworkUtils.toURL(syncAdditionUrl));
-                        if (!syncAddition.equals("")) {
-                            conf = conf + "\n" + syncAddition;
-                        }
-                    }
+                    // String syncAdditionUrl = mobile.Mobile.getConfigSetting(conf, "sync.addition");
+                    // if (syncAdditionUrl != null && !syncAdditionUrl.equals("")) {
+                    //     String syncAddition = NetworkUtils.doGet(NetworkUtils.toURL(syncAdditionUrl));
+                    //     if (!syncAddition.equals("")) {
+                    //         conf = conf + "\n" + syncAddition;
+                    //     }
+                    // }
                     Sites.IncomingSite incomingSite = Sites.IncomingSite.parse(name, token, conf);
                     incomingSite.save(getContext());
                     handler.post(() -> {
