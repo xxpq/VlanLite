@@ -281,10 +281,12 @@ public class Sites {
                 this.listen = listen;
             }
             HashMap<String, String> rawLogging = (HashMap<String, String>) object.get("logging");
-            String level = rawLogging.get("level");
-            if (level != null) {
-                LOGGING logging = new LOGGING(level);
-                this.logging = logging;
+            if (rawLogging != null) {
+                String level = rawLogging.get("level");
+                if (level != null) {
+                    LOGGING logging = new LOGGING(level);
+                    this.logging = logging;
+                }
             }
             this.points = rawPoint;
             this.dnsResolvers = dns;
