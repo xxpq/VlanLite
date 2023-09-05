@@ -170,8 +170,8 @@ public class HiPerVpnService extends VpnService {
 
     private void stopVpn() {
         unregisterNetworkCallback();
-        hiper.stop();
         try {
+            hiper.stop();
             vpnInterface.close();
         } catch (IOException e) {
             e.printStackTrace();

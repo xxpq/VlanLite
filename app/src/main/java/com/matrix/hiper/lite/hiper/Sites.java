@@ -112,15 +112,27 @@ public class Sites {
         }
     }
 
-    public static class TOWER {
-        private final ArrayList<String> points;
+    public static class LISTEN {
+        private final Number port;
 
-        public TOWER() {
-            this(new ArrayList<>());
+        public LISTEN() {
+            this(35533);
         }
 
-        public TOWER(ArrayList<String> points) {
-            this.points = points;
+        public LISTEN (Number port) {
+            this.port = port;
+        }
+    }
+
+    public static class LOGGING {
+        private final String level;
+
+        public LOGGING() {
+            this("error");
+        }
+
+        public LOGGING (String level) {
+            this.level = level;
         }
     }
 
@@ -140,18 +152,19 @@ public class Sites {
         private final String cipher;
         private final int sortKey;
         private final String logVerbosity;
-        private final PKI pki;
+        private PKI pki;
         private final TUN tun;
-        private final SYNC sync;
-        private final TOWER tower;
+        private SYNC sync;
+        private LISTEN listen;
+        private LOGGING logging;
         @Expose(serialize = false)
         private String key;
 
         public IncomingSite() {
-            this("", "", new HashMap<>(), new ArrayList<>(), new ArrayList<>(), "", "", 0, 0, 0, "", 0, "", "", new SYNC());
+            this("", "", new HashMap<>(), new ArrayList<>(), new ArrayList<>(), "", "", 0, 0, 0, "", 0, "", "", new SYNC(), new LISTEN(), new LOGGING());
         }
 
-        public IncomingSite(String name, String id, HashMap<String, ArrayList<String>> point, ArrayList<UnsafeRoute> unsafeRoutes, ArrayList<String> dnsResolvers, String cert, String ca, int lhDuration, int port, int mtu, String cipher, int sortKey, String logVerbosity, String key, SYNC sync) {
+        public IncomingSite(String name, String id, HashMap<String, ArrayList<String>> point, ArrayList<UnsafeRoute> unsafeRoutes, ArrayList<String> dnsResolvers, String cert, String ca, int lhDuration, int port, int mtu, String cipher, int sortKey, String logVerbosity, String key, SYNC sync, LISTEN listen, LOGGING logging) {
             this.name = name;
             this.id = id;
             this.points = point;
@@ -169,11 +182,8 @@ public class Sites {
             this.sync = sync;
             this.pki = new PKI(ca, cert, key);
             this.tun = new TUN();
-            ArrayList<String> towerPoints = new ArrayList<>();
-            for (Map.Entry<String, ArrayList<String>> entry : point.entrySet()) {
-                towerPoints.add(entry.getKey());
-            }
-            this.tower = new TOWER(towerPoints);
+            this.listen = listen;
+            this.logging = logging;
         }
 
         public void setPoint(HashMap<String, ArrayList<String>> point) {
@@ -265,6 +275,17 @@ public class Sites {
             Map object = yaml.load(conf);
             HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
+            HashMap<String, Number> rawListen = (HashMap<String, Number>) object.get("listen");
+            if (rawListen != null) {
+                LISTEN listen = new LISTEN(rawListen.get("port"));
+                this.listen = listen;
+            }
+            HashMap<String, String> rawLogging = (HashMap<String, String>) object.get("logging");
+            String level = rawLogging.get("level");
+            if (level != null) {
+                LOGGING logging = new LOGGING(level);
+                this.logging = logging;
+            }
             this.points = rawPoint;
             this.dnsResolvers = dns;
         }
@@ -275,6 +296,12 @@ public class Sites {
             Map addtionObject = yaml.load(addtion);
             HashMap<String, String> rawSync = (HashMap<String, String>) object.get("sync");
             SYNC sync = new SYNC(rawSync.get("addition"), rawSync.get("source"));
+            HashMap<String, String> rawLogging = (HashMap<String, String>) object.get("logging");
+            if (rawLogging == null) {
+                rawLogging = new HashMap<>();
+                rawLogging.put("level", "error");
+            }
+            LOGGING logging = new LOGGING(rawLogging.get("level"));
             object.putAll(addtionObject);
             HashMap<String, String> pki = (HashMap<String, String>) object.get("pki");
             String cert = pki.get("cert");
@@ -282,6 +309,12 @@ public class Sites {
             String key = pki.get("key");
             HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
+            HashMap<String, Number> rawListen = (HashMap<String, Number>) object.get("listen");
+            if (rawListen == null) {
+                rawListen = new HashMap<>();
+                rawListen.put("port", 35533);
+            }
+            LISTEN listen = new LISTEN(rawListen.get("port"));
             return new IncomingSite(
                     name,
                     id,
@@ -297,7 +330,9 @@ public class Sites {
                     0,
                     "error",
                     key,
-                    sync
+                    sync,
+                    listen,
+                    logging
             );
         }
     }
