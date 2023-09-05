@@ -103,7 +103,7 @@ public class SiteListAdapter extends BaseAdapter {
         }
         DateFormat dateFormat = new SimpleDateFormat(context.getString(R.string.time_pattern), Locale.getDefault());
         viewHolder.date.setText(date == null ? site.getCert().getCert().getDetails().getNotAfter() : dateFormat.format(date));
-        viewHolder.ip.setText(site.getName());
+        viewHolder.ip.setText(site.getCert().getCert().getDetails().getIps().get(0));
         if (HiPerVpnService.isRunning(site.getName())) {
             viewHolder.name.setTextColor(Color.GREEN);
             viewHolder.date.setTextColor(Color.GREEN);
@@ -126,11 +126,11 @@ public class SiteListAdapter extends BaseAdapter {
             new Thread(() -> {
                 try {
                     if (Setting.getSetting(context, site.getName()).isAutoUpdate()) {
-                        String url = "https://cert.mcer.cn/point.yml";
-                        String conf = NetworkUtils.doGet(NetworkUtils.toURL(url));
                         String path = context.getFilesDir().getAbsolutePath() + "/" + site.getName() + "/hiper_config.json";
                         String s = StringUtils.getStringFromFile(path);
                         Sites.IncomingSite incomingSite = new Gson().fromJson(s, Sites.IncomingSite.class);
+                        String url = incomingSite.getSyncAddition();
+                        String conf = NetworkUtils.doGet(NetworkUtils.toURL(url));
                         incomingSite.update(conf);
                         incomingSite.save(context);
                     }

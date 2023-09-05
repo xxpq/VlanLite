@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">HiPer</string>
+    <string name="app_name">Vlan Lite</string>
 
     <string name="time_pattern">yyyy 年 MM 月 dd 日 HH:mm:ss</string>
 

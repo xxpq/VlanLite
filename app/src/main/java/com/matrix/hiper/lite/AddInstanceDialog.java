@@ -84,14 +84,14 @@ public class AddInstanceDialog extends Dialog implements View.OnClickListener {
                     });
                 }
                 else {
-                    // String syncAdditionUrl = mobile.Mobile.getConfigSetting(conf, "sync.addition");
-                    // if (syncAdditionUrl != null && !syncAdditionUrl.equals("")) {
-                    //     String syncAddition = NetworkUtils.doGet(NetworkUtils.toURL(syncAdditionUrl));
-                    //     if (!syncAddition.equals("")) {
-                    //         conf = conf + "\n" + syncAddition;
-                    //     }
-                    // }
-                    Sites.IncomingSite incomingSite = Sites.IncomingSite.parse(name, token, conf);
+                    conf = conf.replaceAll("HIPER", "VLAN");
+                    conf = conf.replaceAll("\u003d", "=");
+                    String syncAddition = null;
+                    String syncAdditionUrl = mobile.Mobile.getConfigSetting(conf, "sync.addition");
+                    if (syncAdditionUrl != null && !syncAdditionUrl.equals("")) {
+                        syncAddition = NetworkUtils.doGet(NetworkUtils.toURL(syncAdditionUrl));
+                    }
+                    Sites.IncomingSite incomingSite = Sites.IncomingSite.parse(name, token, conf, syncAddition);
                     incomingSite.save(getContext());
                     handler.post(() -> {
                         callback.onInstanceAdd();

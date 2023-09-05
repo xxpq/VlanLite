@@ -26,9 +26,11 @@ import java.util.Objects;
 
 import mobile.CIDR;
 
+// import com.matrix.hiper.lite.utils.LogUtils;
+
 public class HiPerVpnService extends VpnService {
 
-    private static String TAG = "HiPerVpnService";
+    private static String TAG = "VlanLite";
 
     private static boolean running = false;
     private static Sites.Site site = null;
@@ -91,7 +93,6 @@ public class HiPerVpnService extends VpnService {
         CIDR ipNet;
 
         try {
-            announceExit(site.getCert().toString());
             ipNet = mobile.Mobile.parseCIDR(site.getCert().getCert().getDetails().getIps().get(0));
         } catch (Exception e) {
             announceExit(e.toString());
@@ -141,7 +142,8 @@ public class HiPerVpnService extends VpnService {
         Handler handler = new Handler();
         new Thread(() -> {
             try {
-                hiper = mobile.Mobile.newBulk(site.getConfig(), site.getKey(this), site.getLogFile(), vpnInterface.getFd());
+                // LogUtils.d(site.getConfig());
+                hiper = mobile.Mobile.newBulk(site.getConfig(), site.getLogFile(), vpnInterface.getFd());
                 handler.post(() -> {
                     registerNetworkCallback();
                     //TODO: There is an open discussion around sleep killing tunnels or just changing mobile to tear down stale tunnels
