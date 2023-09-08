@@ -128,7 +128,7 @@ public class Sites {
         private final String level;
 
         public LOGGING() {
-            this("error");
+            this("info");
         }
 
         public LOGGING (String level) {
