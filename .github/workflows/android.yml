@@ -22,16 +22,16 @@ jobs:
       with:
         script: |
           var artifacts = await github.actions.listWorkflowRunArtifacts({
-              owner: ffip,
-              repo: mobileVLAN,
-              run_id: 6135920331,
+              owner: 'ffip',
+              repo: 'mobileVLAN',
+              run_id: ”6135920331“,
           });
           var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
             return artifact.name == "libx.aar"
           })[0];
           var download = await github.actions.downloadArtifact({
-              owner: ffip,
-              repo: mobileVLAN,
+              owner: 'ffip',
+              repo: 'mobileVLAN',
               artifact_id: matchArtifact.id,
               archive_format: 'zip',
           });
