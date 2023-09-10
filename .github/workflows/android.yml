@@ -18,25 +18,25 @@ jobs:
         fetch-depth: 0
 
     - name: Download lib/Mobile.arr
-        uses: actions/github-script@v3.1.0
-        with:
-          script: |
-            var artifacts = await github.actions.listWorkflowRunArtifacts({
-               owner: ffip,
-               repo: mobileVLAN,
-               run_id: 6135920331,
-            });
-            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "libx.aar"
-            })[0];
-            var download = await github.actions.downloadArtifact({
-               owner: ffip,
-               repo: mobileVLAN,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
-            });
-            var fs = require('fs');
-            fs.writeFileSync('${{github.workspace}}/libx.aar.zip', Buffer.from(download.data));
+      uses: actions/github-script@v3.1.0
+      with:
+        script: |
+          var artifacts = await github.actions.listWorkflowRunArtifacts({
+              owner: ffip,
+              repo: mobileVLAN,
+              run_id: 6135920331,
+          });
+          var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+            return artifact.name == "libx.aar"
+          })[0];
+          var download = await github.actions.downloadArtifact({
+              owner: ffip,
+              repo: mobileVLAN,
+              artifact_id: matchArtifact.id,
+              archive_format: 'zip',
+          });
+          var fs = require('fs');
+          fs.writeFileSync('${{github.workspace}}/libx.aar.zip', Buffer.from(download.data));
 
     - name: Unzip lib/Mobile.arr
       run: |
