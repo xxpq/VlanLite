@@ -24,7 +24,7 @@ jobs:
           var artifacts = await github.actions.listWorkflowRunArtifacts({
               owner: 'ffip',
               repo: 'mobileVLAN',
-              run_id: ”6135920331“,
+              run_id: '6135920331',
           });
           var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
             return artifact.name == "libx.aar"
