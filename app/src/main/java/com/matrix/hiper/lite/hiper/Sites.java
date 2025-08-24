@@ -332,7 +332,7 @@ public class Sites {
             object.putAll(addtionObject);
             HashMap<String, String> pki = (HashMap<String, String>) object.get("pki");
             String cert = "";
-            String ca = "";
+            String ca = "-----BEGIN VLAN CERTIFICATE-----\nClcKIUdsb2JhbCBOZXR3b3JrIExpY2Vuc2UgKE9mZmljaWFsKRICAAAoyI+moQYw\nyMuGgRI6IEl3WI0vJH/oZGMKKw+n/QkcGqYIfv4s/MJrYZbKitd3QAESQJI9UM0Q\nzztvW5ev4cI2AMgAXF3Kpm4mkRIZDSFXViifirUwloaJO6Q4QjdzxC0pWMdv3q6f\nNes8MHlWADFbsAQ=\n-----END VLAN CERTIFICATE-----";
             String key = "";
             if (pki != null) {
                 cert = pki.get("cert") != null ? pki.get("cert") : "";
