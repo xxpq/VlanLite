@@ -268,7 +268,7 @@ public class Sites {
         }
 
         public void update(String conf) {
-            if (conf == null || conf == "") {
+            if (conf == null || conf.isEmpty()) {
                 return;
             }
             Yaml yaml = new Yaml();
@@ -296,6 +296,12 @@ public class Sites {
         }
 
         public static IncomingSite parse(String name, String id, String conf, String addtion) {
+            if (conf == null || conf.isEmpty()) {
+                conf = "{}";
+            }
+            if (addtion == null || addtion.isEmpty()) {
+                addtion = "{}";
+            }
             Yaml yaml = new Yaml();
             Map object = yaml.load(conf);
             Map addtionObject = yaml.load(addtion);
