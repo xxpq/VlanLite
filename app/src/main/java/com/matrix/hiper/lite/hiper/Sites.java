@@ -273,6 +273,9 @@ public class Sites {
             }
             Yaml yaml = new Yaml();
             Map object = yaml.load(conf);
+            if (object == null) {
+                object = new HashMap<>();
+            }
             HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
             if (rawPoint == null) {
                 rawPoint = new HashMap<>();
@@ -305,8 +308,21 @@ public class Sites {
             Yaml yaml = new Yaml();
             Map object = yaml.load(conf);
             Map addtionObject = yaml.load(addtion);
+            if (object == null) {
+                object = new HashMap<>();
+            }
+            if (addtionObject == null) {
+                addtionObject = new HashMap<>();
+            }
             HashMap<String, String> rawSync = (HashMap<String, String>) object.get("sync");
-            SYNC sync = new SYNC(rawSync.get("addition"), rawSync.get("source"));
+            SYNC sync;
+            if (rawSync != null) {
+                String addition = rawSync.get("addition") != null ? rawSync.get("addition") : "";
+                String source = rawSync.get("source") != null ? rawSync.get("source") : "";
+                sync = new SYNC(addition, source);
+            } else {
+                sync = new SYNC();
+            }
             HashMap<String, String> rawLogging = (HashMap<String, String>) object.get("logging");
             if (rawLogging == null) {
                 rawLogging = new HashMap<>();
