@@ -274,6 +274,9 @@ public class Sites {
             Yaml yaml = new Yaml();
             Map object = yaml.load(conf);
             HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
+            if (rawPoint == null) {
+                rawPoint = new HashMap<>();
+            }
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
             HashMap<String, Number> rawListen = (HashMap<String, Number>) object.get("listen");
             if (rawListen != null) {
@@ -306,10 +309,18 @@ public class Sites {
             LOGGING logging = new LOGGING(rawLogging.get("level"));
             object.putAll(addtionObject);
             HashMap<String, String> pki = (HashMap<String, String>) object.get("pki");
-            String cert = pki.get("cert");
-            String ca = pki.get("ca");
-            String key = pki.get("key");
+            String cert = "";
+            String ca = "";
+            String key = "";
+            if (pki != null) {
+                cert = pki.get("cert") != null ? pki.get("cert") : "";
+                ca = pki.get("ca") != null ? pki.get("ca") : "";
+                key = pki.get("key") != null ? pki.get("key") : "";
+            }
             HashMap<String, ArrayList<String>> rawPoint = (HashMap<String, ArrayList<String>>) object.get("points");
+            if (rawPoint == null) {
+                rawPoint = new HashMap<>();
+            }
             ArrayList<String> dns = (ArrayList<String>) object.get("dns");
             HashMap<String, Number> rawListen = (HashMap<String, Number>) object.get("listen");
             if (rawListen == null) {
@@ -475,32 +486,38 @@ public class Sites {
             CertificateInfo cert = new CertificateInfo();
             ArrayList<CertificateInfo> ca = new ArrayList<>();
             try {
-                String rawDetails = mobile.Mobile.parseCerts(incomingSite.cert);
-                CertificateInfo[] certs = new Gson().fromJson(rawDetails, CertificateInfo[].class);
-                if (certs.length == 0) {
-                    errors.add("No certificate found");
-                }
-                cert = certs[0];
-                if (!cert.getValidity().isValid()) {
-                    errors.add("Certificate is invalid: " + cert.getValidity().getReason());
+                if (incomingSite.cert != null && !incomingSite.cert.isEmpty()) {
+                    String rawDetails = mobile.Mobile.parseCerts(incomingSite.cert);
+                    CertificateInfo[] certs = new Gson().fromJson(rawDetails, CertificateInfo[].class);
+                    if (certs.length == 0) {
+                        errors.add("No certificate found");
+                    } else {
+                        cert = certs[0];
+                        if (!cert.getValidity().isValid()) {
+                            errors.add("Certificate is invalid: " + cert.getValidity().getReason());
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 errors.add(e.toString());
             }
             try {
-                String rawCa = mobile.Mobile.parseCerts(incomingSite.getCa());
-                CertificateInfo[] caArray = new Gson().fromJson(rawCa, CertificateInfo[].class);
-                ca = new ArrayList<>(Arrays.asList(caArray));
-                boolean hasErrors = false;
-                for (CertificateInfo info : ca) {
-                    if (!info.getValidity().isValid()) {
-                        hasErrors = true;
-                        break;
+                String caValue = incomingSite.getCa();
+                if (caValue != null && !caValue.isEmpty()) {
+                    String rawCa = mobile.Mobile.parseCerts(caValue);
+                    CertificateInfo[] caArray = new Gson().fromJson(rawCa, CertificateInfo[].class);
+                    ca = new ArrayList<>(Arrays.asList(caArray));
+                    boolean hasErrors = false;
+                    for (CertificateInfo info : ca) {
+                        if (!info.getValidity().isValid()) {
+                            hasErrors = true;
+                            break;
+                        }
                     }
-                }
-                if (hasErrors) {
-                    errors.add("There are issues with 1 or more ca certificates");
+                    if (hasErrors) {
+                        errors.add("There are issues with 1 or more ca certificates");
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
