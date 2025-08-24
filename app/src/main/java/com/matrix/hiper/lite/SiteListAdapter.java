@@ -130,9 +130,17 @@ public class SiteListAdapter extends BaseAdapter {
                         String s = StringUtils.getStringFromFile(path);
                         Sites.IncomingSite incomingSite = new Gson().fromJson(s, Sites.IncomingSite.class);
                         String url = incomingSite.getSyncAddition();
-                        String conf = NetworkUtils.doGet(NetworkUtils.toURL(url));
-                        incomingSite.update(conf);
-                        incomingSite.save(context);
+                        
+                        // 验证URL是否有效
+                        if (url != null && !url.trim().isEmpty() && url.trim().contains("://")) {
+                            String conf = NetworkUtils.doGet(NetworkUtils.toURL(url));
+                            incomingSite.update(conf);
+                            incomingSite.save(context);
+                        } else {
+                            activity.runOnUiThread(() -> {
+                                Toast.makeText(context, "同步URL无效或为空，跳过自动更新", Toast.LENGTH_SHORT).show();
+                            });
+                        }
                     }
                     activity.runOnUiThread(() -> {
                         for (Sites.Site si : list) {

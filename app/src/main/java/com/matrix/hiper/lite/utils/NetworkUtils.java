@@ -116,9 +116,20 @@ public final class NetworkUtils {
 
     public static URL toURL(String str) {
         try {
-            return new URL(str);
+            // 检查URL字符串是否为空或null
+            if (str == null || str.trim().isEmpty()) {
+                throw new MalformedURLException("URL string is null or empty");
+            }
+            
+            // 检查URL是否包含协议前缀
+            String trimmedStr = str.trim();
+            if (!trimmedStr.contains("://")) {
+                throw new MalformedURLException("URL must contain a protocol (e.g., http:// or https://)");
+            }
+            
+            return new URL(trimmedStr);
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("Invalid URL: " + str + " - " + e.getMessage(), e);
         }
     }
 

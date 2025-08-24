@@ -171,8 +171,16 @@ public class HiPerVpnService extends VpnService {
     private void stopVpn() {
         unregisterNetworkCallback();
         try {
-            hiper.stop();
-            vpnInterface.close();
+            // 检查hiper对象是否已初始化
+            if (hiper != null) {
+                hiper.stop();
+                hiper = null; // 清空引用
+            }
+            // 检查vpnInterface是否已初始化
+            if (vpnInterface != null) {
+                vpnInterface.close();
+                vpnInterface = null; // 清空引用
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -204,13 +212,17 @@ public class HiPerVpnService extends VpnService {
         @Override
         public void onAvailable(@NonNull Network network) {
             super.onAvailable(network);
-            hiper.rebind("network change");
+            if (hiper != null) {
+                hiper.rebind("network change");
+            }
         }
 
         @Override
         public void onLost(@NonNull Network network) {
             super.onLost(network);
-            hiper.rebind("network change");
+            if (hiper != null) {
+                hiper.rebind("network change");
+            }
         }
     }
 
